@@ -1,0 +1,16 @@
+[
+{
+  "modid": "emitters",
+  "name": "Emitters",
+  "description": "Fully configurable particle emitters!",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Machir"],
+  "credits": "Tonius, for the idea",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
