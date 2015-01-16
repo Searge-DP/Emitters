@@ -56,42 +56,36 @@ public class TileEmitter extends TileEntity {
     		this.yOffset = 0.3f;
     		this.zOffset = 0.5f;
     		this.yVel    = 0.1f;
-    		this.particle = Particle.SMOKE;
     		break;
     	case DOWN:
     		this.xOffset = 0.5f;
     		this.yOffset = 0.8f;
     		this.zOffset = 0.5f;
     		this.yVel    = -0.1f;
-    		this.particle = Particle.REDDUST;
     		break;
     	case NORTH:
     		this.xOffset = 0.5f;
     		this.yOffset = 0.5f;
     		this.zOffset = 0.7f;
     		this.zVel    = -0.1f;
-    		this.particle = Particle.NOTE;
     		break;
     	case SOUTH:
     		this.xOffset = 0.5f;
     		this.yOffset = 0.5f;
     		this.zOffset = 0.3f;
     		this.zVel    = 0.1f;
-    		this.particle = Particle.BUBBLE;
     		break;
     	case WEST:
     		this.xOffset = 0.7f;
     		this.yOffset = 0.5f;
     		this.zOffset = 0.5f;
     		this.xVel    = -0.1f;
-    		this.particle = Particle.FLAME;
     		break;
     	case EAST:
     		this.xOffset = 0.3f;
     		this.yOffset = 0.5f;
     		this.zOffset = 0.5f;
     		this.xVel    = 0.1f;
-    		this.particle = Particle.HEART;
     		break;
     	}
 		
@@ -128,4 +122,8 @@ public class TileEmitter extends TileEntity {
     	
     	Minecraft.getMinecraft().effectRenderer.addEffect(emitterFX);
     }
+
+	public void setParticle(Particle particle) {
+		this.particle = particle;
+	}
 }

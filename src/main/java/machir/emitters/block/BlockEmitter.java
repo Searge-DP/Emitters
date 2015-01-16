@@ -1,10 +1,14 @@
 package machir.emitters.block;
 
+import java.util.Random;
+
 import machir.emitters.tileentity.TileEmitter;
+import machir.emitters.tileentity.TileEmitter.Particle;
 import machir.emitters.util.BlockConstants;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -71,6 +75,18 @@ public class BlockEmitter extends BlockMod implements ITileEntityProvider {
     public int onBlockPlaced(World world, int posX, int posY, int posZ, int side, float hitX, float hitY, float hitZ, int meta) {
         return ForgeDirection.getOrientation(side).ordinal();
     }
+	
+	@Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ) {
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		
+		if (tileEntity instanceof TileEmitter) {
+			TileEmitter tileEmitter = (TileEmitter) tileEntity;
+			tileEmitter.setParticle(Particle.values()[new Random().nextInt(Particle.values().length)]);
+		}
+		
+		return false;
+	}
 	
 	/**
 	 * Override the registerBlockIcons to call the _ method which passes through to the Block class
