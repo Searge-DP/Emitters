@@ -1,7 +1,13 @@
 package machir.emitters.tileentity;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import machir.emitters.Emitters;
 import machir.emitters.util.ModConstants;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -128,6 +134,40 @@ public class TileEmitter extends TileEntity {
 			break;
 		}
 	}
+	
+	/**
+	 * Used to process description packets
+	 */
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+    	this.readFromNBT(pkt.func_148857_g());
+    }
+    
+    public void readFromNBT(NBTTagCompound nbttagcompound) {
+        super.readFromNBT(nbttagcompound);
+        this.particle = Particle.valueOf(nbttagcompound.getString("emitters.particle"));
+        this.velocity = nbttagcompound.getFloat("emitters.velocity");
+        this.size = nbttagcompound.getFloat("emitters.size");
+        this.spread = nbttagcompound.getFloat("emitters.spread");
+        this.frequency = nbttagcompound.getInteger("emitters.frequency");
+    }
+
+    public void writeToNBT(NBTTagCompound nbttagcompound) {
+        super.writeToNBT(nbttagcompound);
+        nbttagcompound.setString("emitters.particle", this.particle.toString());
+        nbttagcompound.setFloat("emitters.velocity", this.velocity);
+        nbttagcompound.setFloat("emitters.size", this.size);
+        nbttagcompound.setFloat("emitters.spread", this.spread);
+        nbttagcompound.setInteger("emitters.frequency", this.frequency);
+    }
+	
+    /**
+     * Provides extra tile entity data through the update packet
+     */
+    public Packet getDescriptionPacket() {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        this.writeToNBT(nbttagcompound);
+        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, nbttagcompound);
+    }
 	
 	/**
 	 * @return the particle

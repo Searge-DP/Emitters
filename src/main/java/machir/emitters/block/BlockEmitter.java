@@ -1,10 +1,9 @@
 package machir.emitters.block;
 
-import java.util.Random;
-
+import machir.emitters.Emitters;
 import machir.emitters.tileentity.TileEmitter;
-import machir.emitters.tileentity.TileEmitter.Particle;
 import machir.emitters.util.BlockConstants;
+import machir.emitters.util.GuiConstants;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -78,13 +77,7 @@ public class BlockEmitter extends BlockMod implements ITileEntityProvider {
 	
 	@Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ) {
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
-		
-		if (tileEntity instanceof TileEmitter) {
-			TileEmitter tileEmitter = (TileEmitter) tileEntity;
-			tileEmitter.setParticle(Particle.values()[new Random().nextInt(Particle.values().length)]);
-		}
-		
+		entityPlayer.openGui(Emitters.instance, GuiConstants.GUI_EMITTER, world, x, y, z);
 		return false;
 	}
 	

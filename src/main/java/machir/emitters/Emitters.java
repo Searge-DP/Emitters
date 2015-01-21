@@ -1,6 +1,8 @@
 package machir.emitters;
 
 import machir.emitters.block.ModBlocks;
+import machir.emitters.handler.GuiHandler;
+import machir.emitters.network.PacketHandler;
 import machir.emitters.util.ModConstants;
 
 import org.apache.logging.log4j.Logger;
@@ -35,5 +37,9 @@ public class Emitters {
 		
 		logger.info("Registering tile entities");
 		ModBlocks.initTileEntities();
+		
+		logger.info("Registering handlers");
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+		PacketHandler.init();
 	}
 }
