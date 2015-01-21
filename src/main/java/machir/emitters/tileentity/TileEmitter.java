@@ -1,21 +1,22 @@
 package machir.emitters.tileentity;
 
+import machir.emitters.Emitters;
 import machir.emitters.util.ModConstants;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityBubbleFX;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.particle.EntityFlameFX;
-import net.minecraft.client.particle.EntityHeartFX;
-import net.minecraft.client.particle.EntityLavaFX;
-import net.minecraft.client.particle.EntityNoteFX;
-import net.minecraft.client.particle.EntityReddustFX;
-import net.minecraft.client.particle.EntitySmokeFX;
-import net.minecraft.client.particle.EntitySplashFX;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEmitter extends TileEntity {
+	public static enum Button {
+		INC_VEL,
+		DEC_VEL,
+		INC_SIZE,
+		DEC_SIZE,
+		INC_SPREAD,
+		DEC_SPREAD,
+		INC_FREQ,
+		DEC_FREQ
+	}
+	
 	public static enum Particle {
 		BUBBLE				(ModConstants.PREFIX + "particle.bubble"),
 		FLAME				(ModConstants.PREFIX + "particle.flame"),
@@ -35,94 +36,111 @@ public class TileEmitter extends TileEntity {
 	}
 	private Particle particle = Particle.SMOKE;
 	
-	private float xOffset = 0f;
-	private float yOffset = 0f;
-	private float zOffset = 0f;
+	public float velocity = 0f;
+	public float size = 1f;
+	public float spread = 1f;
+	public int frequency = 20;
 	
-	private float xVel = 0f;
-	private float yVel = 0f;
-	private float zVel = 0f;
-	
-	private float scaleMultiplier = 1f;
-	private ItemStack itemStack = null;
 	
 	@Override
     public void updateEntity() {
+		if (!this.worldObj.isRemote || this.worldObj.getTotalWorldTime() % this.frequency != 0) {
+			return;
+		}
+		this.particle = Particle.SMOKE;
+		
+		float xOffset = 0;
+		float yOffset = 0;
+		float zOffset = 0;
+		
+		float xVel = 0;
+		float yVel = 0;
+		float zVel = 0;
 		// Prepare the proper particle settings
     	switch (ForgeDirection.getOrientation(this.blockMetadata)) {
     	case UP:
     	default:
-    		this.xOffset = 0.5f;
-    		this.yOffset = 0.3f;
-    		this.zOffset = 0.5f;
-    		this.yVel    = 0.1f;
+    		xOffset = 0.5f;
+    		yOffset = 0.3f;
+    		zOffset = 0.5f;
+    		yVel    = this.velocity;
     		break;
     	case DOWN:
-    		this.xOffset = 0.5f;
-    		this.yOffset = 0.8f;
-    		this.zOffset = 0.5f;
-    		this.yVel    = -0.1f;
+    		xOffset = 0.5f;
+    		yOffset = 0.8f;
+    		zOffset = 0.5f;
+    		yVel    = -this.velocity;
     		break;
     	case NORTH:
-    		this.xOffset = 0.5f;
-    		this.yOffset = 0.5f;
-    		this.zOffset = 0.7f;
-    		this.zVel    = -0.1f;
+    		xOffset = 0.5f;
+    		yOffset = 0.5f;
+    		zOffset = 0.7f;
+    		zVel    = -this.velocity;
     		break;
     	case SOUTH:
-    		this.xOffset = 0.5f;
-    		this.yOffset = 0.5f;
-    		this.zOffset = 0.3f;
-    		this.zVel    = 0.1f;
+    		xOffset = 0.5f;
+    		yOffset = 0.5f;
+    		zOffset = 0.3f;
+    		zVel    = this.velocity;
     		break;
     	case WEST:
-    		this.xOffset = 0.7f;
-    		this.yOffset = 0.5f;
-    		this.zOffset = 0.5f;
-    		this.xVel    = -0.1f;
+    		xOffset = 0.7f;
+    		yOffset = 0.5f;
+    		zOffset = 0.5f;
+    		xVel    = -this.velocity;
     		break;
     	case EAST:
-    		this.xOffset = 0.3f;
-    		this.yOffset = 0.5f;
-    		this.zOffset = 0.5f;
-    		this.xVel    = 0.1f;
+    		xOffset = 0.3f;
+    		yOffset = 0.5f;
+    		zOffset = 0.5f;
+    		xVel    = this.velocity;
     		break;
-    	}
-		
-    	// Switch over the different particle types and create the correct one
-		EntityFX emitterFX = null;
-    	switch(this.particle) {
-    	case BUBBLE:
-    		emitterFX = new EntityBubbleFX(this.worldObj, this.xCoord + this.xOffset, this.yCoord + this.yOffset, this.zCoord + this.zOffset, this.xVel, this.yVel, this.zVel);
-    		break;
-    	case FLAME:
-    		emitterFX = new EntityFlameFX(this.worldObj, this.xCoord + this.xOffset, this.yCoord + this.yOffset, this.zCoord + this.zOffset, this.xVel, this.yVel, this.zVel);
-    		break;
-    	case HEART:
-    		emitterFX = new EntityHeartFX(this.worldObj, this.xCoord + this.xOffset, this.yCoord + this.yOffset, this.zCoord + this.zOffset, this.xVel, this.yVel, this.zVel, this.scaleMultiplier);
-    		break;
-    	case LAVA:
-    		emitterFX = new EntityLavaFX(this.worldObj, this.xCoord + this.xOffset, this.yCoord + this.yOffset, this.zCoord + this.zOffset);
-    		break;
-    	case NOTE:
-    		emitterFX = new EntityNoteFX(this.worldObj, this.xCoord + this.xOffset, this.yCoord + this.yOffset, this.zCoord + this.zOffset, this.xVel, this.yVel, this.zVel, this.scaleMultiplier);
-    		break;
-    	case SPLASH:
-    		emitterFX = new EntitySplashFX(this.worldObj, this.xCoord + this.xOffset, this.yCoord + this.yOffset, this.zCoord + this.zOffset, this.xVel, this.yVel, this.zVel);
-    		break;
-    	case REDDUST:
-    		emitterFX = new EntityReddustFX(this.worldObj, this.xCoord + this.xOffset, this.yCoord + this.yOffset, this.zCoord + this.zOffset, this.scaleMultiplier, this.xVel, this.yVel, this.zVel);
-    		break;
-    	case SMOKE:
-    		emitterFX = new EntitySmokeFX(this.worldObj, this.xCoord + this.xOffset, this.yCoord + this.yOffset, this.zCoord + this.zOffset, this.xVel, this.yVel, this.zVel, this.scaleMultiplier);
-    		break;
-    	default:
-			return;    	
     	}
     	
-    	Minecraft.getMinecraft().effectRenderer.addEffect(emitterFX);
+    	Emitters.proxy.spawnParticle(this, xOffset, yOffset, zOffset, xVel, yVel, zVel);
     }
-
+	
+	public void handleButtonClick(String buttonName) {
+		switch (Button.valueOf(buttonName)) {
+		case INC_VEL:
+			this.velocity += 0.1f;
+			break;
+		case DEC_VEL:
+			this.velocity -= 0.1f;
+			break;
+		case INC_SIZE:
+			this.size += 0.1f;
+			break;
+		case DEC_SIZE:
+			this.size -= 0.1f;
+			break;
+		case INC_SPREAD:
+			this.spread += 0.1f;
+			break;
+		case DEC_SPREAD:
+			this.spread -= 0.1f;
+			break;
+		case INC_FREQ:
+			this.frequency += 1;
+			break;
+		case DEC_FREQ:
+			this.frequency -= 1;
+			break;
+		}
+	}
+	
+	/**
+	 * @return the particle
+	 */
+	public Particle getParticle() {
+		return this.particle;
+	}
+	
+	/**
+	 * Sets the particle to spawn
+	 * 
+	 * @param particle the new particle
+	 */
 	public void setParticle(Particle particle) {
 		this.particle = particle;
 	}

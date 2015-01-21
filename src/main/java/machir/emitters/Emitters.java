@@ -11,6 +11,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 
 @Mod(modid = ModConstants.MODID)
 public class Emitters {
@@ -22,14 +23,17 @@ public class Emitters {
 	public static Logger logger;
 
 	@EventHandler
-	public static void preInit(FMLPreInitializationEvent evt) {
+	public void preInit(FMLPreInitializationEvent evt) {
 		logger = evt.getModLog();
 		logger.info("Starting Emitters");
 	}
 
 	@EventHandler
-	public static void init(FMLInitializationEvent evt) {
+	public void init(FMLInitializationEvent evt) {
+		logger.info("Registering blocks");
 		ModBlocks.init();
+		
+		logger.info("Registering tile entities");
 		ModBlocks.initTileEntities();
 	}
 }
