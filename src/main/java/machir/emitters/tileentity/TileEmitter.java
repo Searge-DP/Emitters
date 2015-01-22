@@ -42,9 +42,9 @@ public class TileEmitter extends TileEntity {
 	}
 	private Particle particle = Particle.SMOKE;
 	
-	public float velocity = 0f;
-	public float size = 1f;
-	public float spread = 1f;
+	public double velocity = 0d;
+	public double size = 1d;
+	public double spread = 1d;
 	public int frequency = 20;
 	
 	
@@ -53,52 +53,51 @@ public class TileEmitter extends TileEntity {
 		if (!this.worldObj.isRemote || this.worldObj.getTotalWorldTime() % this.frequency != 0) {
 			return;
 		}
-		this.particle = Particle.SMOKE;
 		
-		float xOffset = 0;
-		float yOffset = 0;
-		float zOffset = 0;
+		double xOffset = 0;
+		double yOffset = 0;
+		double zOffset = 0;
 		
-		float xVel = 0;
-		float yVel = 0;
-		float zVel = 0;
+		double xVel = 0;
+		double yVel = 0;
+		double zVel = 0;
 		// Prepare the proper particle settings
     	switch (ForgeDirection.getOrientation(this.blockMetadata)) {
     	case UP:
     	default:
-    		xOffset = 0.5f;
-    		yOffset = 0.3f;
-    		zOffset = 0.5f;
+    		xOffset = 0.5d;
+    		yOffset = 0.3d;
+    		zOffset = 0.5d;
     		yVel    = this.velocity;
     		break;
     	case DOWN:
-    		xOffset = 0.5f;
-    		yOffset = 0.8f;
-    		zOffset = 0.5f;
+    		xOffset = 0.5d;
+    		yOffset = 0.8d;
+    		zOffset = 0.5d;
     		yVel    = -this.velocity;
     		break;
     	case NORTH:
-    		xOffset = 0.5f;
-    		yOffset = 0.5f;
-    		zOffset = 0.7f;
+    		xOffset = 0.5d;
+    		yOffset = 0.5d;
+    		zOffset = 0.7d;
     		zVel    = -this.velocity;
     		break;
     	case SOUTH:
-    		xOffset = 0.5f;
-    		yOffset = 0.5f;
-    		zOffset = 0.3f;
+    		xOffset = 0.5d;
+    		yOffset = 0.5d;
+    		zOffset = 0.3d;
     		zVel    = this.velocity;
     		break;
     	case WEST:
-    		xOffset = 0.7f;
-    		yOffset = 0.5f;
-    		zOffset = 0.5f;
+    		xOffset = 0.7d;
+    		yOffset = 0.5d;
+    		zOffset = 0.5d;
     		xVel    = -this.velocity;
     		break;
     	case EAST:
-    		xOffset = 0.3f;
-    		yOffset = 0.5f;
-    		zOffset = 0.5f;
+    		xOffset = 0.3d;
+    		yOffset = 0.5d;
+    		zOffset = 0.5d;
     		xVel    = this.velocity;
     		break;
     	}
@@ -109,22 +108,28 @@ public class TileEmitter extends TileEntity {
 	public void handleButtonClick(String buttonName) {
 		switch (Button.valueOf(buttonName)) {
 		case INC_VEL:
-			this.velocity += 0.1f;
+			this.velocity += 0.1d;
+			this.velocity = this.round(this.velocity);
 			break;
 		case DEC_VEL:
-			this.velocity -= 0.1f;
+			this.velocity -= 0.1d;
+			this.velocity = this.round(this.velocity);
 			break;
 		case INC_SIZE:
-			this.size += 0.1f;
+			this.size += 0.1d;
+			this.size = this.round(this.size);
 			break;
 		case DEC_SIZE:
-			this.size -= 0.1f;
+			this.size -= 0.1d;
+			this.size = this.round(this.size);
 			break;
 		case INC_SPREAD:
-			this.spread += 0.1f;
+			this.spread += 0.1d;
+			this.spread = this.round(this.spread);
 			break;
 		case DEC_SPREAD:
-			this.spread -= 0.1f;
+			this.spread -= 0.1d;
+			this.spread = this.round(this.spread);
 			break;
 		case INC_FREQ:
 			this.frequency += 1;
@@ -133,6 +138,13 @@ public class TileEmitter extends TileEntity {
 			this.frequency -= 1;
 			break;
 		}
+	}
+	
+	public double round(double value) {
+		value *= 10;
+		value = Math.round(value);
+		value /= 10;
+		return value;
 	}
 	
 	/**
@@ -144,20 +156,20 @@ public class TileEmitter extends TileEntity {
     
     public void readFromNBT(NBTTagCompound nbttagcompound) {
         super.readFromNBT(nbttagcompound);
-        this.particle = Particle.valueOf(nbttagcompound.getString("emitters.particle"));
-        this.velocity = nbttagcompound.getFloat("emitters.velocity");
-        this.size = nbttagcompound.getFloat("emitters.size");
-        this.spread = nbttagcompound.getFloat("emitters.spread");
-        this.frequency = nbttagcompound.getInteger("emitters.frequency");
+        this.particle = Particle.valueOf(nbttagcompound.getString("particle"));
+        this.velocity = nbttagcompound.getDouble("velocity");
+        this.size = nbttagcompound.getDouble("size");
+        this.spread = nbttagcompound.getDouble("spread");
+        this.frequency = nbttagcompound.getInteger("frequency");
     }
 
     public void writeToNBT(NBTTagCompound nbttagcompound) {
         super.writeToNBT(nbttagcompound);
-        nbttagcompound.setString("emitters.particle", this.particle.toString());
-        nbttagcompound.setFloat("emitters.velocity", this.velocity);
-        nbttagcompound.setFloat("emitters.size", this.size);
-        nbttagcompound.setFloat("emitters.spread", this.spread);
-        nbttagcompound.setInteger("emitters.frequency", this.frequency);
+        nbttagcompound.setString("particle", this.particle.toString());
+        nbttagcompound.setDouble("velocity", this.velocity);
+        nbttagcompound.setDouble("size", this.size);
+        nbttagcompound.setDouble("spread", this.spread);
+        nbttagcompound.setInteger("frequency", this.frequency);
     }
 	
     /**
