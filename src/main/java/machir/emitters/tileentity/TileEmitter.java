@@ -20,7 +20,15 @@ public class TileEmitter extends TileEntity {
 		INC_SPREAD,
 		DEC_SPREAD,
 		INC_FREQ,
-		DEC_FREQ
+		DEC_FREQ,
+		BUBBLE,
+		FLAME,
+		HEART,
+		LAVA,
+		NOTE,
+		REDDUST,
+		SPLASH,
+		SMOKE
 	}
 	
 	public static enum Particle {
@@ -29,8 +37,8 @@ public class TileEmitter extends TileEntity {
 		HEART				(ModConstants.PREFIX + "particle.heart"),
 		LAVA				(ModConstants.PREFIX + "particle.lava"),
 		NOTE				(ModConstants.PREFIX + "particle.note"),
-		SPLASH				(ModConstants.PREFIX + "particle.splash"),
 		REDDUST				(ModConstants.PREFIX + "particle.reddust"),
+		SPLASH				(ModConstants.PREFIX + "particle.splash"),
 		SMOKE				(ModConstants.PREFIX + "particle.smoke");
 		
 		// Keep track of the name and index of each particle type
@@ -137,6 +145,30 @@ public class TileEmitter extends TileEntity {
 		case DEC_FREQ:
 			this.frequency -= 1;
 			break;
+		case BUBBLE:
+			this.particle = Particle.BUBBLE;
+			break;
+		case FLAME:
+			this.particle = Particle.FLAME;
+			break;
+		case HEART:
+			this.particle = Particle.HEART;
+			break;
+		case LAVA:
+			this.particle = Particle.LAVA;
+			break;
+		case NOTE:
+			this.particle = Particle.NOTE;
+			break;
+		case REDDUST:
+			this.particle = Particle.REDDUST;
+			break;
+		case SPLASH:
+			this.particle = Particle.SPLASH;
+			break;
+		case SMOKE:
+			this.particle = Particle.SMOKE;
+			break;
 		}
 	}
 	
@@ -186,14 +218,5 @@ public class TileEmitter extends TileEntity {
 	 */
 	public Particle getParticle() {
 		return this.particle;
-	}
-	
-	/**
-	 * Sets the particle to spawn
-	 * 
-	 * @param particle the new particle
-	 */
-	public void setParticle(Particle particle) {
-		this.particle = particle;
 	}
 }

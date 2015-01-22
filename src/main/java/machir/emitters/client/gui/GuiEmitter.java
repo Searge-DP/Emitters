@@ -1,16 +1,21 @@
 package machir.emitters.client.gui;
 
-import scala.reflect.internal.Trees.This;
+import java.util.ArrayList;
+import java.util.List;
+
 import machir.emitters.container.ContainerEmitter;
 import machir.emitters.network.PacketHandler;
 import machir.emitters.network.message.MessageTileButton;
 import machir.emitters.tileentity.TileEmitter;
 import machir.emitters.tileentity.TileEmitter.Button;
+import machir.emitters.tileentity.TileEmitter.Particle;
 import machir.emitters.util.GuiConstants;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import cofh.lib.gui.GuiBase;
 import cofh.lib.gui.element.ElementButton;
+import cofh.lib.gui.element.ElementListBox;
+import cofh.lib.gui.element.listbox.IListBoxElement;
+import cofh.lib.gui.element.listbox.ListBoxElementText;
 
 public class GuiEmitter extends GuiBase {
 	public static final String TEXTURE = GuiConstants.GUI_PATH + "emitter.png";
@@ -36,6 +41,23 @@ public class GuiEmitter extends GuiBase {
 		this.addElement(new ElementButton(this, 151, 68, Button.DEC_SPREAD.toString(), 220, 9, 238, 9, 202, 9, 18, 8, TEXTURE));
 		this.addElement(new ElementButton(this, 151, 78, Button.INC_FREQ.toString(), 220, 0, 238, 0, 202, 0, 18, 9, TEXTURE));
 		this.addElement(new ElementButton(this, 151, 87, Button.DEC_FREQ.toString(), 220, 9, 238, 9, 202, 9, 18, 8, TEXTURE));
+		
+		ElementListBox particle_list = new ElementListBox(this, 7, 19, 72, 94) {
+			@Override
+			protected void onSelectionChanged(int newIndex, IListBoxElement newElement) {
+				TileEmitter emitter = ((ContainerEmitter)GuiEmitter.this.inventorySlots).emitter;
+				PacketHandler.instance.sendToServer(new MessageTileButton(newElement.getValue().toString(), emitter.xCoord, emitter.yCoord, emitter.zCoord, emitter.getWorldObj().provider.dimensionId));
+			}
+		};
+		
+		List<IListBoxElement> particle_options = new ArrayList();
+		Particle[] particles = Particle.values();
+		for (Particle particle : particles) {
+			particle_options.add(new ListBoxElementText(particle.toString()));
+		}
+		particle_list.add(particle_options);
+		particle_list.setSelectedIndex(((ContainerEmitter)GuiEmitter.this.inventorySlots).emitter.getParticle().ordinal());
+		this.addElement(particle_list);
 	}
 	
 	@Override
